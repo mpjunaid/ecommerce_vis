@@ -1,0 +1,146 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <h7> </h7></br>
+    <!-- <h3>Amount of Orders per Location</h3> -->
+    <div class="row">
+        <div class="col-sm-6 container-fluid" >
+            <!-- <h6>Filter Location by State:</h6> -->
+            <!-- <form class="form-inline" method='POST', action="{{ url_for('plots') }}?location=State"> -->
+            <form class="form-inline" method='POST' style="border:1px solid #546aa7;">
+                <div class='container-fluid' style=" margin-top: 5px; margin-left: 5px;">
+                    <span style="display:inline-block; width:600px;"><b>Filter Location by</b></span>
+                    <button type="submit" class="btn btn-secondary" formaction="{{ url_for('plots') }}?location=None">Reset</button>
+                    <!-- <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Please select city:</span> -->
+                    <span style="display:inline-block; width:100px;"><h7>State: </h7></span>
+                    <select name="comp_select2" class="selectpicker form-control input-sm" style="width:500px">
+                        {% for state in states %}
+                        {% if state==state_selected %}
+                        <option value= "{{state}}" SELECTED>{{state_names[loop.index0]}}</option>"
+                        {% else %}
+                        <option value= "{{state}}">{{state_names[loop.index0]}}</option>"
+                        {% endif %}  
+                        {% endfor %}                                           
+                    </select>
+                    <!-- </div> -->
+                    <span style="display:inline-block; width:10px;"></span>
+                    <button type="submit" class="btn btn-primary" formaction="{{ url_for('plots') }}?location=State">Go</button>
+                    <!-- </div> -->
+                <!-- </form>
+                <form class="form-inline" method='POST', action="{{ url_for('plots') }}?location=City"> -->
+                    <!-- <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Please select city:</span> -->
+                    <span style="display:inline-block; width:100px;"><h7>City: </h7></span>
+                    <select name="comp_select" class="selectpicker form-control input-sm" style="width:500px">
+                        {% for city in cities %}
+                        {% if city==city_selected %}
+                        <option value= "{{city}}" SELECTED>{{city.capitalize()}}</option>"
+                        {% else %}
+                        <option value= "{{city}}">{{city.capitalize()}}</option>"
+                        {% endif %}  
+                        {% endfor %}                                           
+                    </select>
+                    <!-- </div> -->
+                    <span style="display:inline-block; width:10px;"></span>
+                    <button type="submit" class="btn btn-primary" formaction="{{ url_for('plots') }}?location=City">Go</button>
+                    <!-- </div> -->
+                    <!-- </form> -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="chart" id="dist-type2"></div>
+                            <div class="chart" id="dist-type2a"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="chart" id="dist-type6"></div>
+                        </div>
+                    </div>
+                    <span style="display:inline-block; width:700px;"><b>Filter Data by</b></span>
+                <!-- <h6>Filter Data by</h6> -->
+                <!-- <h6>Filter Location by State:</h6> -->
+                <!-- <form class="form-inline" method='POST', action="{{ url_for('plots') }}?type=Product&location={{location_type}}"> -->
+                    <!-- <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Please select city:</span> -->
+                    <span style="display:inline-block; width:150px;"><h7>Product Category: </h7></span>
+                    <select name="comp_select3" class="selectpicker form-control input-sm" style="width:250px">
+                        {% for product in products %}
+                        {% if product==product_selected %}
+                        <option value= "{{product}}" SELECTED>{{product.replace("_"," ").capitalize()}}</option>"
+                        {% else %}
+                        <option value= "{{product}}">{{product.replace("_"," ").capitalize()}}</option>"
+                        {% endif %}  
+                        {% endfor %}                                           
+                    </select>
+                    <!-- </div> -->
+                    <button type="submit" class="btn btn-primary" formaction="{{ url_for('plots') }}?type=Product&location={{location_type}}">Go</button>
+                    <!-- </div> -->
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="chart" id="dist-type4"></div>
+                            <div class="chart" id="dist-type5"></div>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="chart" id="dist-type3"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- </div> -->
+            
+        </div>
+        
+        <div class="col-sm-6">
+            <form class="form-inline" method='POST'>
+                <span style="display:inline-block; width:115px;"><h6>View Data by</h6></span>
+                <select name="comp_select4" class="selectpicker form-control input-sm" style="width:250px">
+                    {% if subject_selected=='customer' %}
+                    <option value= "customer" SELECTED>Customer</option>
+                    <option value= "seller">Seller</option>   
+                    {% else %}          
+                    <option value= "customer" >Customer</option>
+                    <option value= "seller" SELECTED>Seller</option>          
+                    {% endif %}  
+                </select>
+                  <!-- </div> -->
+                <button type="submit" class="btn btn-primary" formaction="{{ url_for('plots')}}?view=Subject ">Go</button>
+                <span style="display:inline-block; width:20px;"></span>
+                <span style="display:inline-block; width:60px;"><h6>Hue</h6></span>
+                <select name="comp_select5" class="selectpicker form-control input-sm" style="width:150px">
+                    {% if hue_selected=='price' %}
+                    <option value= "price" SELECTED>Price</option>
+                    <option value= "rating">Rating</option>    
+                    {% else %}          
+                    <option value= "price" >Price</option>
+                    <option value= "rating" SELECTED>Rating</option>      
+                    {% endif %}                                         
+                </select>
+                  <!-- </div> -->
+                <button type="submit" class="btn btn-primary" formaction="{{ url_for('plots') }}?view=Hue">Go</button>
+            </form>
+            <div class="chart mt-0" id="dist-type1">
+            </div>
+        </div>
+    </div>
+    <script>
+        var dist_type1 = {{data1 | safe}}
+        var dist_type2 = {{data2 | safe}}
+        var dist_type2a = {{data2a | safe}}
+        var dist_type3 = {{data3 | safe}}
+        var dist_type4 = {{data4 | safe}}
+        var dist_type5 = {{data5 | safe}}
+        var dist_type6 = {{data6 | safe}}
+
+        Plotly.plot('dist-type1',dist_type1,{})
+        Plotly.plot('dist-type2',dist_type2,{})
+        Plotly.plot('dist-type2a',dist_type2a,{})
+        Plotly.plot('dist-type3',dist_type3,{})
+        Plotly.plot('dist-type4',dist_type4,{})
+        Plotly.plot('dist-type5',dist_type5,{})
+        Plotly.plot('dist-type6',dist_type6,{})
+    </script>
+
+{% endblock body %}
