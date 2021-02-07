@@ -166,12 +166,29 @@ def bar_rating(location='none'):
     m = df_review['review_amount'].quantile(q=0.25)
     c = df_review['review_score'].mean()
     df_review['WR'] = df_review.apply(lambda x: (x['review_score']*(x['review_amount']/(x['review_amount']+m))) + (c*(m/(x['review_amount']+m))), axis=1)
-    df_review = df_review.sort_values('WR',ascending=False).head(5)
+    df_review2 = df_review.sort_values('WR',ascending=False).head(5)
 
-    fig = px.bar(df_review.iloc[::-1], y='product_category_name_english', x='WR', orientation='h', width=325, height=125, hover_data=['review_amount','review_score'])
+    fig = px.bar(df_review2.iloc[::-1], y='product_category_name_english', x='WR', orientation='h', width=325, height=125, hover_data=['review_amount','review_score'])
     fig.update_xaxes(title='', visible=True, showticklabels=True)
     fig.update_yaxes(title='', visible=True, showticklabels=True)
     fig.update_layout(title='Highest Rating Product Categories'+ss, title_font_size=11, font_size=10 , margin = go.layout.Margin(l=0, r=0, b=0, t=18) )
+    
+    df_review2 = df_review.sort_values('WR',ascending=False)
+    fig.update_layout(shapes=[
+            dict(
+                type= 'line',
+                yref= 'paper', y0= 0, y1= 1,
+                xref= 'x',
+                x0=df_review2['WR'].values.mean(),
+                x1=df_review2['WR'].values.mean(),
+                line=dict(
+                        color="Red",
+                        width=2,
+                        dash="dashdot",
+                    )
+            )
+        ])
+    
     fig_json = json.dumps(fig,cls=plotly.utils.PlotlyJSONEncoder)
     return fig_json
 
@@ -186,12 +203,30 @@ def bar_category(location='none'):
         df_loc = df_all[df_all['customer_state']==location]
         ss = ' in ' + location
 
-    df_loc = df_loc.groupby('product_category_name_english').count().sort_values('order_id',ascending=False).head(5)[['order_id']].reset_index()
-    df_loc.rename(columns={'order_id':'quantity'},inplace=True)
-    fig = px.bar(df_loc.iloc[::-1], y='product_category_name_english', x='quantity', orientation='h', width=325, height=125)
+    df_loc2 = df_loc.groupby('product_category_name_english').count().sort_values('order_id',ascending=False).head(5)[['order_id']].reset_index()
+    df_loc2.rename(columns={'order_id':'quantity'},inplace=True)
+    fig = px.bar(df_loc2.iloc[::-1], y='product_category_name_english', x='quantity', orientation='h', width=325, height=125)
     fig.update_xaxes(title='', visible=True, showticklabels=True)
     fig.update_yaxes(title='', visible=True, showticklabels=True)
     fig.update_layout(title='Most Popular Product Categories'+ss, title_font_size=11, font_size=10 , margin = go.layout.Margin(l=0, r=0, b=0, t=18) )
+    
+    df_loc2 = df_loc.groupby('product_category_name_english').count().sort_values('order_id',ascending=False)[['order_id']].reset_index()
+    df_loc2.rename(columns={'order_id':'quantity'},inplace=True)
+    fig.update_layout(shapes=[
+            dict(
+                type= 'line',
+                yref= 'paper', y0= 0, y1= 1,
+                xref= 'x',
+                x0=df_loc2['quantity'].values.mean(),
+                x1=df_loc2['quantity'].values.mean(),
+                line=dict(
+                        color="Red",
+                        width=2,
+                        dash="dashdot",
+                    )
+            )
+        ])
+    
     fig_json = json.dumps(fig,cls=plotly.utils.PlotlyJSONEncoder)
     return fig_json
 
@@ -255,11 +290,34 @@ def hist_duration(location='none',product='none'):
             xanchor="right",
             x=0.99
         ))
+        fig.update_layout(shapes=[
+            dict(
+                type= 'line',
+                yref= 'paper', y0= 0, y1= 1,
+                xref= 'x',
+                x0=new_df['order_duration_day'].values.mean(),
+                x1=new_df['order_duration_day'].values.mean(),
+                line=dict(
+                        color="Red",
+                        width=2,
+                        dash="dashdot",
+                    )
+            )
+        ])
+        fig.add_trace(go.Scatter(
+            x=[new_df['order_duration_day'].values.mean()],
+            y=[0.075],
+            text=["Mean=<br>"+str(round(new_df['order_duration_day'].values.mean(),2))],
+            mode="text",
+            showlegend=False
+        ))
     except:
         fig = px.histogram(pd.DataFrame([np.nan]))
         fig.update_xaxes(title='', visible=True, showticklabels=True)
         fig.update_yaxes(title='', visible=True, showticklabels=True)
         fig.update_layout(title='Delivery-time distribution'+ss2+ss+' (days)', title_font_size=12, font_size=11, margin = go.layout.Margin(l=0, r=0, b=0, t=40), width=325, height=200)
+    
+    
     fig_json = json.dumps(fig,cls=plotly.utils.PlotlyJSONEncoder)
     return fig_json
     # return 
